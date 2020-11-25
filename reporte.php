@@ -2,6 +2,7 @@
 include 'conexion.php';
 session_start();
 $usuario = $_SESSION['username'];
+$idUsuario=$_SESSION['idUsuario'];
 $rol = $_SESSION['idRol'];
 ?>
 <!doctype html>
@@ -196,7 +197,9 @@ $rol = $_SESSION['idRol'];
 									</tr>
 								</thead>
 								<?php
-								$sql = "SELECT * FROM localizacion";
+								$sql = "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
+												from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
+												where U.idUsuario=$idUsuario ";
 								$result = mysqli_query($conexion, $sql);
 								$arrayLat = array();
 								$arrayLgt = array();
@@ -305,7 +308,7 @@ $rol = $_SESSION['idRol'];
 								<?php
 									$idHijos = "SELECT L.idHijo
 																							from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on H.idUsuario=U.idUsuario
-																							where U.idUsuario=2
+																							where U.idUsuario=$idUsuario
 																							group by L.idHijo;";
 									$result = mysqli_query($conexion, $idHijos);
 									$arrayConsultas = array();
