@@ -159,6 +159,9 @@ $rol = $_SESSION['idRol'];
 
 				<form action="" method="POST">
 					<div class="form-row">
+						<div class="">
+							<input type="hidden" id="idSeguimientoSeleccionado">
+						</div>
 						<div class="form-group col-md-4">
 							<label for="inputState">Elegir nombre Hijo</label>
 							<select id="inputState" class="form-control">
@@ -179,7 +182,7 @@ $rol = $_SESSION['idRol'];
 						</div>
 						<div class="form-group col-md-4">
 							<br>
-							<button class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" id="botonMostrar" onclick="onclickMostrarSeguimiento()">Mostrar</button>
+							<button class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" id="botonMostrar" onclick="onclickMostrarListaSeguimientos()">Mostrar</button>
 						</div>
 					</div>
 				</form>
@@ -298,10 +301,12 @@ $rol = $_SESSION['idRol'];
 								flightPath.setMap(map);
 							}
 
-							function onclickMostrarSeguimiento() {
+							function onclickMostrarListaSeguimientos() {
 								console.log("haciendo click en boton");
 								var selectHIjo = document.getElementById("inputState");
 								console.log("hijo seleccionado " + selectHIjo.value);
+
+								$("#tabla-body-seguimiento").empty()
 
 								var listaDeTodosSeguimientos = [];
 
@@ -349,9 +354,43 @@ $rol = $_SESSION['idRol'];
 								var seguimientosFiltrados = _.filter(listaDeTodosSeguimientos, function(o) { return o.idHijo == selectHIjo.value; });
 								console.log("seguimientos filtrados", seguimientosFiltrados);
 
+								var elementosCeldaHtml = "";
+								var contadorFilas = 1;
+								for (let index = 0; index < seguimientosFiltrados.length; index++) {
+									const item = seguimientosFiltrados[index];
+									elementosCeldaHtml += "<tr>";
+									elementosCeldaHtml += "<td>" + contadorFilas + "</td>";
+									elementosCeldaHtml += "<td>" + item.fechaInicio + "</td>";
+									elementosCeldaHtml += "<td>" + item.fechaFin + "</td>";
+									elementosCeldaHtml += "<td>" + item.nombreHijo + "</td>";
+									elementosCeldaHtml += '<td><button type="button" class="btn btn-success" onclick="onclickSeleccionarSeguimiento('+ item.idSeguimiento +')">Seleccionar</button></td>';
+									elementosCeldaHtml += "</tr>";
+									contadorFilas++;
+									
+								}
+								// _.each(seguimientosFiltrados, function (item) {
+								// 	elementosCeldaHtml += "<tr>";
+								// 	elementosCeldaHtml += "<td>" + contadorFilas + "</td>";
+								// 	elementosCeldaHtml += "<td>" + item.fechaInicio + "</td>";
+								// 	elementosCeldaHtml += "<td>" + item.fechaFin + "</td>";
+								// 	elementosCeldaHtml += "<td>" + item.nombreHijo + "</td>";
+								// 	elementosCeldaHtml += '<td><button type="button" class="btn btn-success" onclick="onclickSeleccionarSeguimiento('+ item.idHijo +')">Seleccionar</button></td>';
+								// 	elementosCeldaHtml += "</tr>";
+								// 	contadorFilas++;
+								// });
+
+								//crear fila en la tabla
+								var filaTabla = $(elementosCeldaHtml);  
+								$( "#tabla-body-seguimiento" ).append(filaTabla);
+
+							}
+							function onclickSeleccionarSeguimiento(idSeguimiento){
+								console.log("haciendo click en boton" + idSeguimiento);
+								$('#idSeguimientoSeleccionado').val(idSeguimiento);
 							}
 						</script>
 						<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 						<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQpUKBi4SF8MBFF85v9nkUQEf9YntZos4&callback=initMap">
 						</script>
 					</div>
@@ -362,7 +401,7 @@ $rol = $_SESSION['idRol'];
 
 	<!--MODAL-->
 	<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-lg" >
 			<div class="modal-content">
 				<h2 class="" align="center">Lista de Seguimientos</h2><br>
 				<table class="table">
@@ -375,28 +414,11 @@ $rol = $_SESSION['idRol'];
 							<th scope="col">Accion</th>
 						</tr>
 					</thead>
-					<?php
-					$sql = "SELECT S.idSeguimiento, S.fechaInicio, S.fechaFin, H.nombreHijo
-										FROM seguimiento S inner join Hijo H on S.idHijo=H.idHijo
-										where H.idHijo=1;";
-					$result = mysqli_query($conexion, $sql);
-					while ($mostrar = mysqli_fetch_array($result)) {
-						$idSeguimiento = $mostrar['idSeguimiento'];
-						$fechaInicio = $mostrar['fechaInicio'];
-						$fechaFin = $mostrar['fechaFin'];
-						$idHijo = $mostrar['nombreHijo'];
-					?>
-						<tbody>
-							<tr>
-								<td><?php echo $idSeguimiento; ?></td>
-								<td><?php echo $fechaInicio; ?></td>
-								<td><?php echo $fechaFin; ?></td>
-								<td><?php echo $idHijo; ?></td>
-								<td><button type="button" class="btn btn-success">Ok</button></td>
-							</tr>
+						<tbody id="tabla-body-seguimiento">
+							
 						</tbody>
 					<?php
-					}
+					// }
 					?>
 				</table>
 			</div>
