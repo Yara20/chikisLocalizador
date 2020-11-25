@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+body{
+    background: url(../img/fondo4.png) no-repeat center center fixed;
+    background-size: cover;
+    font-size: .875rem;
+    font-family: 'Sansita Swashed', cursive;
+}
+
+.form_register{
+    width: 600px;
+    margin: auto;
+}
+.form_register h1{
+    color: #3c93b0;
+    font-size: 25pt;
+    font-family: 'Sansita Swashed', cursive;
+    text-align: center;
+    padding: 30px;
+}
+form{
+    background: #FFF;
+    margin: auto;
+    padding: 30px 30px;
+    border: 1px solid #d1d1d1;
+}
+label{
+    display: block;
+    font-size: 12pt;
+    font-family: "Montserrat";
+    margin: 15px auto 5px auto;
+}
+input,select{
+    display: block;
+    width: 100%;
+    font-size: 11pt;
+    padding: 5px;
+    border: 1px solid #85929e;
+    border-radius: 5px;
+}
+.btn_save{
+    font-size: 12pt;
+    background: #12a4c6;
+    padding: 10px;
+    color: #FFF;
+    letter-spacing: 1px;
+    border: 0;
+    cursor: pointer;
+    margin: 15px auto;
+}
+.alert{
+    width: 100%;
+    background: #66e07d66;
+    border-radius: 6px;
+    margin: 20px auto;
+}
+.msg_error{
+    color: #e65656;
+}
+.msg_save{
+    color: #126e00;
+}
+.alert p{
+    padding: 10px;
+}
+.notItemOne option:first-child{
+    display: none;
+}

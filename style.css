@@ -1,0 +1,167 @@
+body{ 
+    /*Estilo de fuentes Titillium Web*/
+    font-family: 'Titillium Web', sans-serif;
+}
+a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Titillium Web', sans-serif;
+    color: #ffffff;
+}
+
+/*--------------------------- Cabecera ---------------------- */
+#header {
+  background: #2F2933;
+  transition: all 0.5s;
+  z-index: 997;
+  padding: 0px 0;
+}
+
+#header.header-scrolled {
+  padding: 0px 0;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+#header .logo {
+  font-size: 32px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: 600;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+#header .logo a {
+  color: #111111;
+}
+
+#header .logo a span {
+  color: #e03a3c;
+}
+
+#header .logo img {
+  max-height: 90px;
+}
+
+@media (max-width: 992px) {
+  #header {
+    padding: 0px 0px;
+  }
+  #header .logo {
+    font-size: 28px;
+  }
+}
+
+/*--------------------------- Barra de Navegacion---------------------- */
+.nav-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-menu > ul {
+  display: flex;
+}
+
+.nav-menu > ul > li {
+  position: relative;
+  white-space: nowrap;
+  padding: 10px 0 10px 28px;
+}
+
+.nav-menu a {
+  display: block;
+  position: relative;
+  color: #ffffff;
+  transition: 0.3s;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+.nav-menu a:hover, .nav-menu .active > a, .nav-menu li:hover > a {
+  color: #FED600;
+}
+
+
+/*--------------------------Baner--------------------------*/
+#hero {
+  width: 100%;
+  height: 100vh;
+  background: url("images/intro-bg.png") center top no-repeat;
+  background-size: cover;
+  position: relative;
+  padding-top: 0px;
+}
+
+#hero:before {
+  content: "";
+  background: rgba(131, 188, 129, 0.5);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#hero h1 {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  color: #2F2933;
+}
+
+#hero h2 {
+  color: #fff;
+  margin: 10px 0 0 0;
+  font-size: 24px;
+}
+
+#hero .btn-get-started {
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 10px 30px;
+  border-radius: 4px;
+  transition: 0.5s;
+  margin-top: 30px;
+  color: #fff;
+  background: #e03a3c;
+  border: 2px solid #e03a3c;
+}
+
+#hero .btn-get-started:hover {
+  background: #e03a3c;
+  border-color: #fff;
+}
+
+@media (max-width: 768px) {
+  #hero {
+    text-align: center;
+    height: auto;
+    padding: 100px 0 60px 0;
+  }
+  #hero h1 {
+    font-size: 28px;
+  }
+  #hero h2 {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+
+@media (max-height: 500px) {
+  #hero {
+    height: 120vh;
+  }
+}

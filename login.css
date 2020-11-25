@@ -1,0 +1,45 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+    background: rgba(231, 219, 219, 0.4);
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Titillium Web', sans-serif;
+}
+h1{
+    font-size: 50px;
+    color: white;
+}
+img{
+    width: 130px;
+    height: 130px;
+    border-radius: 100px;
+    transition: 1s;
+}
+img:hover{
+    -webkit-transform: scale(1.8);
+}
+.form-control{
+    background: transparent;
+    border-radius: 0px;
+    border: 0px;
+    border-bottom: 2px solid forestgreen;
+    font-size: 21px;
+    margin-top: 18px;
+    padding: 23px;
+    color: white;
+}
+.btn{
+    margin-top: 20px;
+    font-size: 21px;
+    width: 200px;
+}
+.col-md-6{
+    box-shadow: -1px 1px 50px 10px rgb(250, 246, 246);
+    border-radius: 0px 100px 0px 100px;
+    margin-top: 60px;
+    height: 500px;
+    background: rgba(52, 58, 64, 0.9);
+}
