@@ -162,6 +162,7 @@ $rol = $_SESSION['idRol'];
 						<div class="">
 							<input type="hidden" id="idSeguimientoSeleccionado">
 						</div>
+						
 						<div class="form-group col-md-4">
 							<label for="inputState">Elegir nombre Hijo</label>
 							<select id="inputState" class="form-control">
@@ -182,7 +183,11 @@ $rol = $_SESSION['idRol'];
 						</div>
 						<div class="form-group col-md-4">
 							<br>
-							<button class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" id="botonMostrar" onclick="onclickMostrarListaSeguimientos()">Mostrar</button>
+							<button class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" id="botonMostrar" onclick="onclickMostrarListaSeguimientos()">Listar Historial</button>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="rango-fechas-seguimiento">Seguimiento Rango de fechas </label>
+							<input type="text" readonly name="rango-fechas-seguimiento" id="rango-fechas-seguimiento">
 						</div>
 					</div>
 				</form>
@@ -233,6 +238,7 @@ $rol = $_SESSION['idRol'];
 
 						<script type="text/javascript">
 							var divmapa = document.getElementById("map");
+							var seguimientosFiltrados = [];
 
 							// Initialize and add the map
 							function initMap() {
@@ -306,7 +312,8 @@ $rol = $_SESSION['idRol'];
 								var selectHIjo = document.getElementById("inputState");
 								console.log("hijo seleccionado " + selectHIjo.value);
 
-								$("#tabla-body-seguimiento").empty()
+								$("#tabla-body-seguimiento").empty();
+								seguimientosFiltrados = [];
 
 								var listaDeTodosSeguimientos = [];
 
@@ -351,11 +358,12 @@ $rol = $_SESSION['idRol'];
 
 								?>
 								console.log("todos los seguimientos", listaDeTodosSeguimientos);
-								var seguimientosFiltrados = _.filter(listaDeTodosSeguimientos, function(o) { return o.idHijo == selectHIjo.value; });
+								seguimientosFiltrados = _.filter(listaDeTodosSeguimientos, function(o) { return o.idHijo == selectHIjo.value; });
 								console.log("seguimientos filtrados", seguimientosFiltrados);
 
 								var elementosCeldaHtml = "";
 								var contadorFilas = 1;
+								
 								for (let index = 0; index < seguimientosFiltrados.length; index++) {
 									const item = seguimientosFiltrados[index];
 									elementosCeldaHtml += "<tr>";
@@ -368,6 +376,8 @@ $rol = $_SESSION['idRol'];
 									contadorFilas++;
 									
 								}
+
+								console.log("elementosCeldaHtml", elementosCeldaHtml);
 								// _.each(seguimientosFiltrados, function (item) {
 								// 	elementosCeldaHtml += "<tr>";
 								// 	elementosCeldaHtml += "<td>" + contadorFilas + "</td>";
@@ -384,9 +394,18 @@ $rol = $_SESSION['idRol'];
 								$( "#tabla-body-seguimiento" ).append(filaTabla);
 
 							}
-							function onclickSeleccionarSeguimiento(idSeguimiento){
-								console.log("haciendo click en boton" + idSeguimiento);
-								$('#idSeguimientoSeleccionado').val(idSeguimiento);
+							function onclickSeleccionarSeguimiento(idSeguimientoParametro){
+								console.log("idSeguimiento" + idSeguimientoParametro);
+								console.log("seguimientosFiltrados", seguimientosFiltrados);
+
+								var seguimientoSeleccionado = _.find(seguimientosFiltrados, function(item) {
+									return item.idSeguimiento == idSeguimientoParametro
+								});
+
+								var rangoFechas = seguimientoSeleccionado ? seguimientoSeleccionado.fechaInicio + '-' + seguimientoSeleccionado.fechaFin: "";
+								$('#idSeguimientoSeleccionado').val(idSeguimientoParametro);
+								$('#rango-fechas-seguimiento').val(rangoFechas);
+								
 							}
 						</script>
 						<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
