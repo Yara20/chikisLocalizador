@@ -3,6 +3,7 @@
   session_start();
   $usuario=$_SESSION['username'];
   $rol=$_SESSION['idRol'];
+  $_SESSION['estaGeneradoReporte']="0";
 ?>
 <!doctype html>
 <html lang="en">
@@ -18,6 +19,8 @@
   <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
   <!-- Bootstrap core CSS -->
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   <link href="dashboard.css" rel="stylesheet">
@@ -170,11 +173,10 @@
               <button class="btn btn-primary" type="submit">Guardar</button>
             </form>
           </div>
-          <br>
         </form>
 
 
-        <br><br>
+        <br>
           <h2 class="" align="center">Lista de Hijos</h2><br>
           <input class="form-control mb-4" id="tableSearch" type="text"placeholder="Buscar">
           <table class="table">
@@ -185,14 +187,16 @@
                 <th scope="col">Codigo Pais</th>
                 <th scope="col">Celular</th>
                 <th scope="col">Operador Movil</th>  
-                <th scope="col">Imei</th>              
+                <th scope="col">Imei</th>  
+                <th scope="col">Acción</th>              
                 <th scope="col">Editar</th>
                 <th scope="col">Eliminar</th>
               </tr>
             </thead>
             <?php  
+              $cont=1;
               //$sql = "SELECT * FROM hijo";
-              $sql="SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
+              $sql="SELECT nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
                     from hijo H inner join usuario U on H.idUsuario=U.idUsuario
                     where U.usuario='$usuario'";
               $result = mysqli_query($conexion,$sql);
@@ -200,17 +204,19 @@
             ?>
             <tbody id="myTable">
               <tr>
-                <td><?php echo $mostrar['idHijo'] ?></td>
+                <td><?php echo $cont?></td>
                 <td><?php echo $mostrar['nombreHijo'] ?></td>
                 <td><?php echo $mostrar['codigoPais'] ?></td>
                 <td><?php echo $mostrar['celular'] ?></td>
                 <td><?php echo $mostrar['operadorMovil'] ?></td>
                 <td><?php echo $mostrar['imei'] ?></td>
+                <td><input type="checkbox" checked data-toggle="toggle" data-onstyle="primary" data-on="Activar" data-off="Desactivar"></td>
                 <td><button type="button" class="btn btn-success editbtnU" data-toggle="modal" data-target="#editarUsuario">Editar</button></td>
                 <td><button type="button" class="btn btn-danger deletebtnU" data-toggle="modal" data-target="#eliminarUsuario">Eliminar</button></td>
               </tr>
             </tbody>
             <?php 
+              $cont++;
               }
             ?>
           </table>
@@ -233,6 +239,7 @@
     });
   </script>
 
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>

@@ -2,6 +2,7 @@
   session_start();
   $usuario=$_SESSION['username'];
   $rol=$_SESSION['idRol'];
+  $_SESSION['estaGeneradoReporte']="0";
 ?>
 <!doctype html>
 <html lang="en">

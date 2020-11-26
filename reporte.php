@@ -2,8 +2,9 @@
 include 'conexion.php';
 session_start();
 $usuario = $_SESSION['username'];
-$idUsuario=$_SESSION['idUsuario'];
+$idUsuario = $_SESSION['idUsuario'];
 $rol = $_SESSION['idRol'];
+$seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGeneradoReporte'] : "0";
 ?>
 <!doctype html>
 <html lang="en">
@@ -44,7 +45,7 @@ $rol = $_SESSION['idRol'];
 			<h1>Chikis Localizator</h1>
 		</div>
 		<div class="col-md-1">
-			<?php echo "<h1>$usuario</h1>"; ?>
+			<?php echo "<h1>$usuario</h1>"; ?>			
 		</div>
 		<div class="col-md-1">
 			<a class="nav-link" href="editarPerfil.php"><span data-feather="user"></span>Editar Datos</a>
@@ -131,41 +132,17 @@ $rol = $_SESSION['idRol'];
 
 			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-1">
 				<br>
-				<h2 class="" align="center">Lista de Hijos</h2><br>
-				<table class="table">
-					<?php
-					//$sql = "SELECT * FROM hijo";
-					$sql = "SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
-										from hijo H inner join usuario U on H.idUsuario=U.idUsuario
-										where U.usuario='$usuario'";
-					$result = mysqli_query($conexion, $sql);
-					while ($mostrar = mysqli_fetch_array($result)) {
-					?>
-						<tbody>
-							<tr>
-								<td><?php echo $mostrar['idHijo'] ?></td>
-								<td><?php echo $mostrar['nombreHijo'] ?></td>
-								<td>
-									<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary" data-on="Activar" data-off="Desactivar">
-								</td>
-							</tr>
-						</tbody>
-					<?php
-					}
-					?>
-				</table>
-				<br><br>
 				<h2 class="" align="center">Reporte Historico</h2><br>
 
-				<form action="" method="POST">
+				<form action="generarReporte.php" method="POST">
 					<div class="form-row">
 						<div class="">
-							<input type="hidden" id="idSeguimientoSeleccionado">
+							<input type="hidden" id="idSeguimientoSeleccionado" name="idSeguimientoSeleccionado">
 						</div>
-						
-						<div class="form-group col-md-4">
-							<label for="inputState">Elegir nombre Hijo</label>
-							<select id="inputState" class="form-control">
+
+						<div class="form-group col-md-7">
+							<label for="idHijoSelect">Elegir nombre Hijo</label>
+							<select id="idHijoSelect" class="form-control" name="idHijoSelect">
 								<?php
 								$sql = "SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
 												from hijo H inner join usuario U on H.idUsuario=U.idUsuario
@@ -181,18 +158,25 @@ $rol = $_SESSION['idRol'];
 								?>
 							</select>
 						</div>
-						<div class="form-group col-md-4">
-							<br>
-							<button class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" id="botonMostrar" onclick="onclickMostrarListaSeguimientos()">Listar Historial</button>
-						</div>
-						<div class="form-group col-md-4">
-							<label for="rango-fechas-seguimiento">Seguimiento Rango de fechas </label>
-							<input type="text" readonly name="rango-fechas-seguimiento" id="rango-fechas-seguimiento">
+						<div class="form-group col-md-5">
+							<label for="seguimientosButton">&nbsp</label><br>
+							<button id="seguimientosButton" class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="onclickMostrarListaSeguimientos()">Seguimientos</button>
 						</div>
 					</div>
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label id="fechaInicioLabel" for="fechaInicio">Fecha Inicio</label><br>
+							<span id="fechaInicioSpan"></span>
+						</div>
+						<div class="form-group col-md-4">
+							<label id="fechaFinLabel" for="fechaFin">Fecha Fin</label><br>
+							<span id="fechaFinSpan"></span>
+						</div>
+					</div>
+					<button class="btn btn-primary" id="botonMostrar" type="submit">Generar Reporte</button>
 				</form>
 
-				<div class="container" data-aos="zoom-out" data-aos-delay="100">
+				<div id="reporte-container" class="container" data-aos="zoom-out" data-aos-delay="100">
 					<div class="row">
 						<div class="col-xl-6">
 							<table class="table">
@@ -205,31 +189,34 @@ $rol = $_SESSION['idRol'];
 									</tr>
 								</thead>
 								<?php
-								$sql = "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
-												from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
-												where U.idUsuario=$idUsuario ";
-								$result = mysqli_query($conexion, $sql);
-								$arrayLat = array();
-								$arrayLgt = array();
-								$cont = 0;
-								while ($mostrar = mysqli_fetch_array($result)) {
-									$idLocalizacion = $mostrar['idLocalizacion'];
-									$latitud = $mostrar['latitud'];
-									$longitud = $mostrar['longitud'];
-									$fechaActualizacion = $mostrar['fechaActualizacion'];
-									$arrayLat[$cont] = $mostrar['latitud'];
-									$arrayLgt[$cont] = $mostrar['longitud'];
-									$cont++;
-								?>
-									<tbody>
-										<tr>
-											<td><?php echo $idLocalizacion; ?></td>
-											<td><?php echo $latitud; ?></td>
-											<td><?php echo $longitud; ?></td>
-											<td><?php echo $fechaActualizacion; ?></td>
-										</tr>
-									</tbody>
-								<?php
+								if ($seGeneroReporte == "1") {
+									$sql = isset($_SESSION['sqlReporte']) ? $_SESSION['sqlReporte'] : "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
+													from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
+													where U.idUsuario=$idUsuario";
+	
+									$result = mysqli_query($conexion, $sql);
+									$arrayLat = array();
+									$arrayLgt = array();
+									$cont = 0;
+									while ($mostrar = mysqli_fetch_array($result)) {
+										$idLocalizacion = $mostrar['idLocalizacion'];
+										$latitud = $mostrar['latitud'];
+										$longitud = $mostrar['longitud'];
+										$fechaActualizacion = $mostrar['fechaActualizacion'];
+										$arrayLat[$cont] = $mostrar['latitud'];
+										$arrayLgt[$cont] = $mostrar['longitud'];
+										$cont++;
+									?>
+										<tbody>
+											<tr>
+												<td><?php echo $idLocalizacion; ?></td>
+												<td><?php echo $latitud; ?></td>
+												<td><?php echo $longitud; ?></td>
+												<td><?php echo $fechaActualizacion; ?></td>
+											</tr>
+										</tbody>
+									<?php
+									}
 								}
 								?>
 							</table>
@@ -240,6 +227,7 @@ $rol = $_SESSION['idRol'];
 							var divmapa = document.getElementById("map");
 							var seguimientosFiltrados = [];
 
+							<?php if ($seGeneroReporte == "1") { ?>
 							// Initialize and add the map
 							function initMap() {
 								var options = {
@@ -306,10 +294,10 @@ $rol = $_SESSION['idRol'];
 								});
 								flightPath.setMap(map);
 							}
-
+							<?php  } ?>
 							function onclickMostrarListaSeguimientos() {
 								console.log("haciendo click en boton");
-								var selectHIjo = document.getElementById("inputState");
+								var selectHIjo = document.getElementById("idHijoSelect");
 								console.log("hijo seleccionado " + selectHIjo.value);
 
 								$("#tabla-body-seguimiento").empty();
@@ -318,52 +306,54 @@ $rol = $_SESSION['idRol'];
 								var listaDeTodosSeguimientos = [];
 
 								<?php
-									$idHijos = "SELECT L.idHijo
+								$idHijos = "SELECT L.idHijo
 																							from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on H.idUsuario=U.idUsuario
 																							where U.idUsuario=$idUsuario
 																							group by L.idHijo;";
-									$result = mysqli_query($conexion, $idHijos);
-									$arrayConsultas = array();
-									$contConsultas = 0;
-									while ($mostrar = mysqli_fetch_array($result)) {
-										$arrayConsultas[$contConsultas] = "SELECT S.idSeguimiento, S.fechaInicio, S.fechaFin, H.nombreHijo, H.idHijo
+								$result = mysqli_query($conexion, $idHijos);
+								$arrayConsultas = array();
+								$contConsultas = 0;
+								while ($mostrar = mysqli_fetch_array($result)) {
+									$arrayConsultas[$contConsultas] = "SELECT S.idSeguimiento, S.fechaInicio, S.fechaFin, H.nombreHijo, H.idHijo
 																																FROM seguimiento S inner join Hijo H on S.idHijo=H.idHijo
 																																where H.idHijo=" . $mostrar['idHijo'] . ";";
-										$contConsultas++;
-									}
-									$contadorSeguimientos = 0;
-									$limiteConsultas = count($arrayConsultas);
+									$contConsultas++;
+								}
+								$contadorSeguimientos = 0;
+								$limiteConsultas = count($arrayConsultas);
 
-									while ($contadorSeguimientos < $limiteConsultas) {
-										$result2 = mysqli_query($conexion, $arrayConsultas[$contadorSeguimientos]);
-										while ($mostrar2 = mysqli_fetch_array($result2)) {
+								while ($contadorSeguimientos < $limiteConsultas) {
+									$result2 = mysqli_query($conexion, $arrayConsultas[$contadorSeguimientos]);
+									while ($mostrar2 = mysqli_fetch_array($result2)) {
 								?>
 
-								//javascript - inicio
-								var seguimiento<?php echo $mostrar2["idSeguimiento"] ?> = {
-									idSeguimiento: "<?php echo $mostrar2["idSeguimiento"] ?>",
-									fechaInicio: "<?php echo $mostrar2["fechaInicio"] ?>",
-									fechaFin: "<?php echo $mostrar2["fechaFin"] ?>",
-									nombreHijo: "<?php echo $mostrar2["nombreHijo"] ?>",
-									idHijo: "<?php echo $mostrar2["idHijo"] ?>"
-								};
-								listaDeTodosSeguimientos.push(seguimiento<?php echo $mostrar2["idSeguimiento"] ?>);
-								//javascript - fin
-								
+										//javascript - inicio
+										var seguimiento<?php echo $mostrar2["idSeguimiento"] ?> = {
+											idSeguimiento: "<?php echo $mostrar2["idSeguimiento"] ?>",
+											fechaInicio: "<?php echo $mostrar2["fechaInicio"] ?>",
+											fechaFin: "<?php echo $mostrar2["fechaFin"] ?>",
+											nombreHijo: "<?php echo $mostrar2["nombreHijo"] ?>",
+											idHijo: "<?php echo $mostrar2["idHijo"] ?>"
+										};
+										listaDeTodosSeguimientos.push(seguimiento<?php echo $mostrar2["idSeguimiento"] ?>);
+										//javascript - fin
+
 								<?php
 
-										}
-										$contadorSeguimientos++;
 									}
+									$contadorSeguimientos++;
+								}
 
 								?>
 								console.log("todos los seguimientos", listaDeTodosSeguimientos);
-								seguimientosFiltrados = _.filter(listaDeTodosSeguimientos, function(o) { return o.idHijo == selectHIjo.value; });
+								seguimientosFiltrados = _.filter(listaDeTodosSeguimientos, function(o) {
+									return o.idHijo == selectHIjo.value;
+								});
 								console.log("seguimientos filtrados", seguimientosFiltrados);
 
 								var elementosCeldaHtml = "";
 								var contadorFilas = 1;
-								
+
 								for (let index = 0; index < seguimientosFiltrados.length; index++) {
 									const item = seguimientosFiltrados[index];
 									elementosCeldaHtml += "<tr>";
@@ -374,7 +364,7 @@ $rol = $_SESSION['idRol'];
 									elementosCeldaHtml += '<td><button type="button" class="btn btn-success" onclick="onclickSeleccionarSeguimiento('+ item.idSeguimiento +')">Seleccionar</button></td>';
 									elementosCeldaHtml += "</tr>";
 									contadorFilas++;
-									
+
 								}
 
 								console.log("elementosCeldaHtml", elementosCeldaHtml);
@@ -390,11 +380,12 @@ $rol = $_SESSION['idRol'];
 								// });
 
 								//crear fila en la tabla
-								var filaTabla = $(elementosCeldaHtml);  
-								$( "#tabla-body-seguimiento" ).append(filaTabla);
+								var filaTabla = $(elementosCeldaHtml);
+								$("#tabla-body-seguimiento").append(filaTabla);
 
 							}
-							function onclickSeleccionarSeguimiento(idSeguimientoParametro){
+
+							function onclickSeleccionarSeguimiento(idSeguimientoParametro) {
 								console.log("idSeguimiento" + idSeguimientoParametro);
 								console.log("seguimientosFiltrados", seguimientosFiltrados);
 
@@ -402,15 +393,44 @@ $rol = $_SESSION['idRol'];
 									return item.idSeguimiento == idSeguimientoParametro
 								});
 
-								var rangoFechas = seguimientoSeleccionado ? seguimientoSeleccionado.fechaInicio + '-' + seguimientoSeleccionado.fechaFin: "";
+								//var rangoFechas = seguimientoSeleccionado ? seguimientoSeleccionado.fechaInicio + '-' + seguimientoSeleccionado.fechaFin : "";
 								$('#idSeguimientoSeleccionado').val(idSeguimientoParametro);
-								$('#rango-fechas-seguimiento').val(rangoFechas);
+								//$('#rango-fechas-seguimiento').val(rangoFechas);
+								var fechaInicio=seguimientoSeleccionado.fechaInicio;
+								var fechaFin=seguimientoSeleccionado.fechaFin;
+								// $('#fechaInicio').val(fechaInicio);
+								// $('#fechaFin').val(fechaFin);
+								$('#fechaInicioSpan').append(fechaInicio);
+								$('#fechaFinSpan').append(fechaFin);
+								$('#fechaInicioLabel').show();
+								$('#fechaFinLabel').show();
+								$('#botonMostrar').show();
+
 								
 							}
+						<?php  //} ?>
 						</script>
 						<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+						<?php if ($seGeneroReporte == "1") { ?>
 						<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQpUKBi4SF8MBFF85v9nkUQEf9YntZos4&callback=initMap">
+						<?php  } ?>
+
+						</script>
+						<script>
+							<?php if ($seGeneroReporte == "1") { ?>
+
+							<?php  } else {?>
+								$('#fechaInicioLabel').hide();
+								$('#fechaFinLabel').hide();
+								$('#reporte-container').hide();
+								$('#botonMostrar').hide();
+							<?php  } ?>
+
+
+
+							
+							//console.log(estaGeneradoReporte);
 						</script>
 					</div>
 				</div>
@@ -420,9 +440,15 @@ $rol = $_SESSION['idRol'];
 
 	<!--MODAL-->
 	<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" >
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<h2 class="" align="center">Lista de Seguimientos</h2><br>
+				<div class="modal-header">
+					<h2 class="" align="center">Lista de Seguimientos</h2><br>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
 				<table class="table">
 					<thead class="thead-dark">
 						<tr>
@@ -433,13 +459,16 @@ $rol = $_SESSION['idRol'];
 							<th scope="col">Accion</th>
 						</tr>
 					</thead>
-						<tbody id="tabla-body-seguimiento">
-							
-						</tbody>
+					<tbody id="tabla-body-seguimiento">
+
+					</tbody>
 					<?php
 					// }
 					?>
 				</table>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -454,7 +483,6 @@ $rol = $_SESSION['idRol'];
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-	<script src="dashboard.js"></script>
 </body>
 
 </html>
