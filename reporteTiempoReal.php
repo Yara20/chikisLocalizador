@@ -4,7 +4,7 @@ session_start();
 $usuario = $_SESSION['username'];
 $idUsuario = $_SESSION['idUsuario'];
 $rol = $_SESSION['idRol'];
-$seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGeneradoReporte'] : "0";
+$seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGeneroTiemporeal'] : "0";
 ?>
 <!doctype html>
 <html lang="en">
@@ -99,7 +99,7 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 						}
 						if ($rol == 1) {
 						?>
-							<li class="nav-item active">
+							<li class="nav-item">
 								<a class="nav-link" href="listaHijo.php">
 									<span data-feather="users"></span>
 									Lista Hijos
@@ -110,13 +110,13 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 						if ($rol != 1) {
 						?>
 							<li class="nav-item">
-								<a class="nav-link active" href="#">
+								<a class="nav-link" href="#">
 									<span data-feather="bar-chart-2"></span>
 									Reporte
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="reporteTiempoReal.php">
+								<a class="nav-link active" href="reporteTiempoReal.php">
 									<span data-feather="bar-chart-2"></span>
 									Tiempo Real
 								</a>
@@ -138,48 +138,33 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 
 			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-1">
 				<br>
-				<h2 class="" align="center">Reporte Historico</h2><br>
+				<h2 class="" align="center">Ubicacion en Tiempo Real</h2><br>
 
-				<form action="generarReporte.php" method="POST">
+				<form action="generarTiempoReal.php" method="POST">
 					<div class="form-row">
-						<div class="">
-							<input type="hidden" id="idSeguimientoSeleccionado" name="idSeguimientoSeleccionado">
-						</div>
-
 						<div class="form-group col-md-7">
 							<label for="idHijoSelect">Elegir nombre Hijo</label>
 							<select id="idHijoSelect" class="form-control" name="idHijoSelect">
-								<?php
-								$sql = "SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
-												from hijo H inner join usuario U on H.idUsuario=U.idUsuario
-												where U.usuario='$usuario'";
+							<?php
+								$sql = "SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei 
+										from hijo H inner join usuario U on H.idUsuario=U.idUsuario 
+										where U.usuario='$usuario'";
 								$result = mysqli_query($conexion, $sql);
 								while ($mostrar = mysqli_fetch_array($result)) {
-								?>
+							?>
 									<option value="<?php echo $mostrar['idHijo'] ?>">
 										<?php echo $mostrar['nombreHijo'] ?>
 									</option>
-								<?php
+							<?php
 								}
-								?>
+							?>
 							</select>
 						</div>
 						<div class="form-group col-md-5">
 							<label for="seguimientosButton">&nbsp</label><br>
-							<button id="seguimientosButton" class="btn btn-primary" type="button" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="onclickMostrarListaSeguimientos()">Seguimientos</button>
+							<button class="btn btn-primary" id="botonMostrar" type="submit">Mostrar</button>
 						</div>
 					</div>
-					<div class="form-row">
-						<div class="form-group col-md-4">
-							<label id="fechaInicioLabel" for="fechaInicio">Fecha Inicio</label><br>
-							<span id="fechaInicioSpan"></span>
-						</div>
-						<div class="form-group col-md-4">
-							<label id="fechaFinLabel" for="fechaFin">Fecha Fin</label><br>
-							<span id="fechaFinSpan"></span>
-						</div>
-					</div>
-					<button class="btn btn-primary" id="botonMostrar" type="submit">Generar Reporte</button>
 				</form>
 
 				<div id="reporte-container" class="container" data-aos="zoom-out" data-aos-delay="100">
@@ -195,35 +180,32 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 									</tr>
 								</thead>
 								<?php
-								if ($seGeneroReporte == "1") {
-									$sql = isset($_SESSION['sqlReporte']) ? $_SESSION['sqlReporte'] : "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
-													from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
-													where U.idUsuario=$idUsuario";
-
-									$result = mysqli_query($conexion, $sql);
-									$arrayLat = array();
-									$arrayLgt = array();
-									$cont = 0;
-									while ($mostrar = mysqli_fetch_array($result)) {
-										$idLocalizacion = $mostrar['idLocalizacion'];
-										$latitud = $mostrar['latitud'];
-										$longitud = $mostrar['longitud'];
-										$fechaActualizacion = $mostrar['fechaActualizacion'];
-										$arrayLat[$cont] = $mostrar['latitud'];
-										$arrayLgt[$cont] = $mostrar['longitud'];
-										$cont++;
+									$sql=isset($_SESSION['sqlReporteTiempoReal'])? $_SESSION['sqlReporteTiempoReal'] : ""; 
+									if($sql != ""){
+										$result = mysqli_query($conexion, $sql);
+										$arrayLat = array();
+										$arrayLgt = array();
+										$cont = 0;
+										while ($mostrar = mysqli_fetch_array($result)) {
+											$idLocalizacion = $mostrar['idLocalizacion'];
+											$latitud = $mostrar['latitud'];
+											$longitud = $mostrar['longitud'];
+											$fechaActualizacion = $mostrar['fechaActualizacion'];
+											$arrayLat[$cont] = $mostrar['latitud'];
+											$arrayLgt[$cont] = $mostrar['longitud'];
+											$cont++;
 								?>
-										<tbody>
-											<tr>
-												<td><?php echo $idLocalizacion; ?></td>
-												<td><?php echo $latitud; ?></td>
-												<td><?php echo $longitud; ?></td>
-												<td><?php echo $fechaActualizacion; ?></td>
-											</tr>
-										</tbody>
+											<tbody>
+												<tr>
+													<td><?php echo $idLocalizacion; ?></td>
+													<td><?php echo $latitud; ?></td>
+													<td><?php echo $longitud; ?></td>
+													<td><?php echo $fechaActualizacion; ?></td>
+												</tr>
+											</tbody>
 								<?php
-									}
-								}
+										}
+									}	
 								?>
 							</table>
 						</div>
@@ -273,24 +255,6 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 									console.log(arrayCoordenadas);
 									//agregando una ventana de informacion
 
-									const flightPlanCoordinates = [{
-											lat: 37.772,
-											lng: -122.214
-										},
-										{
-											lat: 21.291,
-											lng: -157.821
-										},
-										{
-											lat: -18.142,
-											lng: 178.431
-										},
-										{
-											lat: -27.467,
-											lng: 153.027
-										},
-									];
-									console.log(flightPlanCoordinates);
 									const flightPath = new google.maps.Polyline({
 										path: arrayCoordenadas,
 										geodesic: true,
@@ -301,122 +265,6 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 									flightPath.setMap(map);
 								}
 							<?php  } ?>
-
-							function onclickMostrarListaSeguimientos() {
-								console.log("haciendo click en boton");
-								var selectHIjo = document.getElementById("idHijoSelect");
-								console.log("hijo seleccionado " + selectHIjo.value);
-
-								$("#tabla-body-seguimiento").empty();
-								seguimientosFiltrados = [];
-
-								var listaDeTodosSeguimientos = [];
-
-								<?php
-								$idHijos = "SELECT L.idHijo
-																							from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on H.idUsuario=U.idUsuario
-																							where U.idUsuario=$idUsuario
-																							group by L.idHijo;";
-								$result = mysqli_query($conexion, $idHijos);
-								$arrayConsultas = array();
-								$contConsultas = 0;
-								while ($mostrar = mysqli_fetch_array($result)) {
-									$arrayConsultas[$contConsultas] = "SELECT S.idSeguimiento, S.fechaInicio, S.fechaFin, H.nombreHijo, H.idHijo
-																																FROM seguimiento S inner join Hijo H on S.idHijo=H.idHijo
-																																where H.idHijo=" . $mostrar['idHijo'] . ";";
-									$contConsultas++;
-								}
-								$contadorSeguimientos = 0;
-								$limiteConsultas = count($arrayConsultas);
-
-								while ($contadorSeguimientos < $limiteConsultas) {
-									$result2 = mysqli_query($conexion, $arrayConsultas[$contadorSeguimientos]);
-									while ($mostrar2 = mysqli_fetch_array($result2)) {
-								?>
-
-										//javascript - inicio
-										var seguimiento<?php echo $mostrar2["idSeguimiento"] ?> = {
-											idSeguimiento: "<?php echo $mostrar2["idSeguimiento"] ?>",
-											fechaInicio: "<?php echo $mostrar2["fechaInicio"] ?>",
-											fechaFin: "<?php echo $mostrar2["fechaFin"] ?>",
-											nombreHijo: "<?php echo $mostrar2["nombreHijo"] ?>",
-											idHijo: "<?php echo $mostrar2["idHijo"] ?>"
-										};
-										listaDeTodosSeguimientos.push(seguimiento<?php echo $mostrar2["idSeguimiento"] ?>);
-										//javascript - fin
-
-								<?php
-
-									}
-									$contadorSeguimientos++;
-								}
-
-								?>
-								console.log("todos los seguimientos", listaDeTodosSeguimientos);
-								seguimientosFiltrados = _.filter(listaDeTodosSeguimientos, function(o) {
-									return o.idHijo == selectHIjo.value;
-								});
-								console.log("seguimientos filtrados", seguimientosFiltrados);
-
-								var elementosCeldaHtml = "";
-								var contadorFilas = 1;
-
-								for (let index = 0; index < seguimientosFiltrados.length; index++) {
-									const item = seguimientosFiltrados[index];
-									elementosCeldaHtml += "<tr>";
-									elementosCeldaHtml += "<td>" + contadorFilas + "</td>";
-									elementosCeldaHtml += "<td>" + item.fechaInicio + "</td>";
-									elementosCeldaHtml += "<td>" + item.fechaFin + "</td>";
-									elementosCeldaHtml += "<td>" + item.nombreHijo + "</td>";
-									elementosCeldaHtml += '<td><button type="button" class="btn btn-success" onclick="onclickSeleccionarSeguimiento(' + item.idSeguimiento + ')">Seleccionar</button></td>';
-									elementosCeldaHtml += "</tr>";
-									contadorFilas++;
-
-								}
-
-								console.log("elementosCeldaHtml", elementosCeldaHtml);
-								// _.each(seguimientosFiltrados, function (item) {
-								// 	elementosCeldaHtml += "<tr>";
-								// 	elementosCeldaHtml += "<td>" + contadorFilas + "</td>";
-								// 	elementosCeldaHtml += "<td>" + item.fechaInicio + "</td>";
-								// 	elementosCeldaHtml += "<td>" + item.fechaFin + "</td>";
-								// 	elementosCeldaHtml += "<td>" + item.nombreHijo + "</td>";
-								// 	elementosCeldaHtml += '<td><button type="button" class="btn btn-success" onclick="onclickSeleccionarSeguimiento('+ item.idHijo +')">Seleccionar</button></td>';
-								// 	elementosCeldaHtml += "</tr>";
-								// 	contadorFilas++;
-								// });
-
-								//crear fila en la tabla
-								var filaTabla = $(elementosCeldaHtml);
-								$("#tabla-body-seguimiento").append(filaTabla);
-
-							}
-
-							function onclickSeleccionarSeguimiento(idSeguimientoParametro) {
-								console.log("idSeguimiento" + idSeguimientoParametro);
-								console.log("seguimientosFiltrados", seguimientosFiltrados);
-
-								var seguimientoSeleccionado = _.find(seguimientosFiltrados, function(item) {
-									return item.idSeguimiento == idSeguimientoParametro
-								});
-
-								//var rangoFechas = seguimientoSeleccionado ? seguimientoSeleccionado.fechaInicio + '-' + seguimientoSeleccionado.fechaFin : "";
-								$('#idSeguimientoSeleccionado').val(idSeguimientoParametro);
-								//$('#rango-fechas-seguimiento').val(rangoFechas);
-								var fechaInicio = seguimientoSeleccionado.fechaInicio;
-								var fechaFin = seguimientoSeleccionado.fechaFin;
-								// $('#fechaInicio').val(fechaInicio);
-								// $('#fechaFin').val(fechaFin);
-								$('#fechaInicioSpan').append(fechaInicio);
-								$('#fechaFinSpan').append(fechaFin);
-								$('#fechaInicioLabel').show();
-								$('#fechaFinLabel').show();
-								$('#botonMostrar').show();
-
-
-							}
-							<?php  //} 
-							?>
 						</script>
 						<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
@@ -431,13 +279,7 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 									$('#fechaInicioLabel').hide();
 									$('#fechaFinLabel').hide();
 									$('#reporte-container').hide();
-									$('#botonMostrar').hide();
 								<?php  } ?>
-
-
-
-
-								//console.log(estaGeneradoReporte);
 							</script>
 					</div>
 				</div>

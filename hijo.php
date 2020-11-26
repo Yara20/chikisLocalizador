@@ -107,6 +107,12 @@
                 Reporte
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="reporteTiempoReal.php">
+                <span data-feather="bar-chart-2"></span>
+                Tiempo Real
+              </a>
+            </li>
             <?php 
               }
             ?>
