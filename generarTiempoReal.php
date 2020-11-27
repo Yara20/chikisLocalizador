@@ -18,9 +18,16 @@ if ($idHijoSelect == "") {
     $total = $resultado->fetch_array()['total'] ?? '';
     $estaActivado = $total > 0;
     if($estaActivado){
+        $sqlFechaInicio="SELECT fechaInicio
+                            from seguimiento
+                            where fechaFin is null and idHijo='$idHijoSelect'";
+        
+        $resultadoFechaInicio = mysqli_query($conexion, $sqlFechaInicio);
+        $fechaInicio = $resultadoFechaInicio->fetch_array()['fechaInicio'] ?? '';
+
         $sql = "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
         from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
-        where U.idUsuario=$idUsuario and H.idHijo=$idHijoSelect";
+        where U.idUsuario=$idUsuario and H.idHijo=$idHijoSelect and L.fechaActualizacion >='$fechaInicio'";
 
         $_SESSION['sqlReporteTiempoReal'] = $sql;
         $_SESSION['seGeneroTiemporeal'] = "1";

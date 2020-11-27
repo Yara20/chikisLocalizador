@@ -192,6 +192,8 @@ $_SESSION['idSeguimientoSeleccionado']= "";
 										$arrayLgt = array();
 										$cont = 0;
 										$contadorId=1;
+										$latitud = "";
+										$longitud = "";
 										while ($mostrar = mysqli_fetch_array($result)) {
 											$idLocalizacion = $contadorId;
 											$latitud = $mostrar['latitud'];
@@ -228,8 +230,8 @@ $_SESSION['idSeguimientoSeleccionado']= "";
 									var options = {
 										zoom: 15,
 										center: {
-											lat: <?php echo $latitud; ?>,
-											lng: <?php echo $longitud; ?>
+											lat: <?php echo $latitud == "" ? "null" : $latitud; ?>,
+											lng: <?php echo $longitud == "" ? "null" : $longitud; ?>
 										}
 									}
 									//nuevo mapa
@@ -335,7 +337,10 @@ $_SESSION['idSeguimientoSeleccionado']= "";
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script>
-		window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')
+		window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>');
+		setInterval(function (params) {
+			$('#botonMostrar').trigger('click');
+		}, 10000);
 	</script>
 	<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
