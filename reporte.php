@@ -5,6 +5,7 @@ $usuario = $_SESSION['username'];
 $idUsuario = $_SESSION['idUsuario'];
 $rol = $_SESSION['idRol'];
 $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGeneradoReporte'] : "0";
+$_SESSION['seGeneroTiemporeal'] = "0";
 ?>
 <!doctype html>
 <html lang="en">
@@ -171,16 +172,38 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 					</div>
 					<div class="form-row">
 						<div class="form-group col-md-4">
+							<input type="hidden" name="fechaInicioHidden" id="fechaInicioHidden">
+						</div>
+						<div class="form-group col-md-4">
+							<input type="hidden" name="fechaFinHidden" id="fechaFinHidden">
+						</div>
+					</div>
+					<button class="btn btn-primary" id="botonMostrar" type="submit" <?php //echo $seGeneroReporte == "1" ? "disabled" : "" 
+																					?>>
+						Generar Reporte
+					</button><br>
+				</form>
+				<?php
+				if ($seGeneroReporte == 1) {
+				?>
+					<hr>
+					<div class="row">
+						<div class="form-group col-md-4">
+							Reporte Generado:
+						</div>
+						<div class="form-group col-md-4">
 							<label id="fechaInicioLabel" for="fechaInicio">Fecha Inicio</label><br>
-							<span id="fechaInicioSpan"></span>
+							<span id="fechaInicioSpan"><?php echo isset($_SESSION['fechaInicioHidden']) ? $_SESSION['fechaInicioHidden'] : "" ?></span>
 						</div>
 						<div class="form-group col-md-4">
 							<label id="fechaFinLabel" for="fechaFin">Fecha Fin</label><br>
-							<span id="fechaFinSpan"></span>
+							<span id="fechaFinSpan"><?php echo isset($_SESSION['fechaFinHidden']) ? $_SESSION['fechaFinHidden'] : "" ?></span>
 						</div>
 					</div>
-					<button class="btn btn-primary" id="botonMostrar" type="submit">Generar Reporte</button>
-				</form>
+				<?php
+				}
+				?>
+
 
 				<div id="reporte-container" class="container" data-aos="zoom-out" data-aos-delay="100">
 					<div class="row">
@@ -196,14 +219,18 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 								</thead>
 								<?php
 								if ($seGeneroReporte == "1") {
-									$sql = isset($_SESSION['sqlReporte']) ? $_SESSION['sqlReporte'] : "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
-													from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
-													where U.idUsuario=$idUsuario";
+									$sql = isset($_SESSION['sqlReporte']) ?
+										$_SESSION['sqlReporte'] :
+										"SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion
+												from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on U.idUsuario=H.idUsuario 
+												where U.idUsuario=$idUsuario";
 
 									$result = mysqli_query($conexion, $sql);
 									$arrayLat = array();
 									$arrayLgt = array();
 									$cont = 0;
+									$latitud = "";
+									$longitud = "";
 									while ($mostrar = mysqli_fetch_array($result)) {
 										$idLocalizacion = $mostrar['idLocalizacion'];
 										$latitud = $mostrar['latitud'];
@@ -239,8 +266,8 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 									var options = {
 										zoom: 10,
 										center: {
-											lat: <?php echo $latitud; ?>,
-											lng: <?php echo $longitud; ?>
+											lat: <?php echo $latitud == "" ? "null" : $latitud; ?>,
+											lng: <?php echo $longitud == "" ? "null" : $longitud;; ?>
 										}
 									}
 									//nuevo mapa
@@ -273,24 +300,6 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 									console.log(arrayCoordenadas);
 									//agregando una ventana de informacion
 
-									const flightPlanCoordinates = [{
-											lat: 37.772,
-											lng: -122.214
-										},
-										{
-											lat: 21.291,
-											lng: -157.821
-										},
-										{
-											lat: -18.142,
-											lng: 178.431
-										},
-										{
-											lat: -27.467,
-											lng: 153.027
-										},
-									];
-									console.log(flightPlanCoordinates);
 									const flightPath = new google.maps.Polyline({
 										path: arrayCoordenadas,
 										geodesic: true,
@@ -313,17 +322,16 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 								var listaDeTodosSeguimientos = [];
 
 								<?php
-								$idHijos = "SELECT L.idHijo
-																							from localizacion L inner join hijo H on L.idHijo=H.idHijo inner join usuario U on H.idUsuario=U.idUsuario
-																							where U.idUsuario=$idUsuario
-																							group by L.idHijo;";
+								$idHijos = "SELECT idHijo
+											from hijo
+											where idUsuario=$idUsuario";
 								$result = mysqli_query($conexion, $idHijos);
 								$arrayConsultas = array();
 								$contConsultas = 0;
 								while ($mostrar = mysqli_fetch_array($result)) {
 									$arrayConsultas[$contConsultas] = "SELECT S.idSeguimiento, S.fechaInicio, S.fechaFin, H.nombreHijo, H.idHijo
-																																FROM seguimiento S inner join Hijo H on S.idHijo=H.idHijo
-																																where H.idHijo=" . $mostrar['idHijo'] . ";";
+																		FROM seguimiento S inner join Hijo H on S.idHijo=H.idHijo
+																		where S.fechaFin is not null and H.idHijo=" . $mostrar['idHijo'] . ";";
 									$contConsultas++;
 								}
 								$contadorSeguimientos = 0;
@@ -405,9 +413,11 @@ $seGeneroReporte =  isset($_SESSION['estaGeneradoReporte']) ? $_SESSION['estaGen
 								//$('#rango-fechas-seguimiento').val(rangoFechas);
 								var fechaInicio = seguimientoSeleccionado.fechaInicio;
 								var fechaFin = seguimientoSeleccionado.fechaFin;
-								// $('#fechaInicio').val(fechaInicio);
-								// $('#fechaFin').val(fechaFin);
+								$('#fechaInicioHidden').val(fechaInicio);
+								$('#fechaFinHidden').val(fechaFin);
+								$('#fechaInicioSpan').empty();
 								$('#fechaInicioSpan').append(fechaInicio);
+								$('#fechaFinSpan').empty();
 								$('#fechaFinSpan').append(fechaFin);
 								$('#fechaInicioLabel').show();
 								$('#fechaFinLabel').show();

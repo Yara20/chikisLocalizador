@@ -3,6 +3,11 @@
   $usuario=$_SESSION['username'];
   $rol=$_SESSION['idRol'];
   $_SESSION['estaGeneradoReporte']="0";
+  $_SESSION['seGeneroTiemporeal'] = "0";
+  $_SESSION['fechaInicioHidden']= "";
+$_SESSION['fechaFinHidden']= "";
+$_SESSION['idSeguimientoSeleccionado']= "";
+
 ?>
 <!doctype html>
 <html lang="en">

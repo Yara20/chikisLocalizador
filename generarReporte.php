@@ -1,17 +1,19 @@
 <?php 
     include 'conexion.php';
     session_start();
-    $idSeguimientoSeleccionado=$_POST['idSeguimientoSeleccionado'];
+    $idSeguimientoSeleccionado= $_SESSION['idSeguimientoSeleccionado'] == "" ? $_POST['idSeguimientoSeleccionado']: $_SESSION['idSeguimientoSeleccionado'];
     
     $idHijoSelect=$_POST['idHijoSelect'];
-    
+    $_SESSION['fechaInicioHidden']= $_SESSION['fechaInicioHidden'] == ""? $_POST['fechaInicioHidden']: $_SESSION['fechaInicioHidden'];
+    $_SESSION['fechaFinHidden']= $_SESSION['fechaFinHidden'] == "" ? $_POST['fechaFinHidden']: $_SESSION['fechaFinHidden'];    
+    $_SESSION['idSeguimientoSeleccionado']=$idSeguimientoSeleccionado; 
 
     $_SESSION['estaGeneradoReporte']="1";
 
     $sql = "SELECT L.idLocalizacion, L.latitud, L.longitud, L.fechaActualizacion, L.idHijo, H.nombreHijo, S.idSeguimiento, S.fechaInicio, S.fechaFin
             from localizacion L 
             inner join hijo H on L.idHijo=H.idHijo 
-            inner join seguimiento S on S.idHijo=H.idHijo and S.fechaInicio < L.fechaActualizacion and S.fechaFin > L.fechaActualizacion
+            inner join seguimiento S on S.idHijo=H.idHijo and S.fechaInicio <= L.fechaActualizacion and S.fechaFin >= L.fechaActualizacion
             WHERE H.idHijo = $idHijoSelect and S.idSeguimiento = $idSeguimientoSeleccionado";
     $_SESSION['sqlReporte'] = $sql;
     $resultado=mysqli_query($conexion,$sql);

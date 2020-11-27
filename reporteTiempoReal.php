@@ -5,6 +5,11 @@ $usuario = $_SESSION['username'];
 $idUsuario = $_SESSION['idUsuario'];
 $rol = $_SESSION['idRol'];
 $seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGeneroTiemporeal'] : "0";
+$_SESSION['seGeneroTiemporeal'] = "0";
+$_SESSION['fechaInicioHidden']= "";
+$_SESSION['fechaFinHidden']= "";
+$_SESSION['idSeguimientoSeleccionado']= "";
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -110,7 +115,7 @@ $seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGenero
 						if ($rol != 1) {
 						?>
 							<li class="nav-item">
-								<a class="nav-link" href="#">
+								<a class="nav-link" href="reporte.php">
 									<span data-feather="bar-chart-2"></span>
 									Reporte
 								</a>
@@ -144,7 +149,7 @@ $seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGenero
 					<div class="form-row">
 						<div class="form-group col-md-7">
 							<label for="idHijoSelect">Elegir nombre Hijo</label>
-							<select id="idHijoSelect" class="form-control" name="idHijoSelect">
+							<select id="idHijoSelect" class="form-control" name="idHijoSelect" required>
 							<?php
 								$sql = "SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei 
 										from hijo H inner join usuario U on H.idUsuario=U.idUsuario 
@@ -180,20 +185,22 @@ $seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGenero
 									</tr>
 								</thead>
 								<?php
-									$sql=isset($_SESSION['sqlReporteTiempoReal'])? $_SESSION['sqlReporteTiempoReal'] : ""; 
-									if($sql != ""){
+									if($seGeneroReporte == "1"){
+										$sql=isset($_SESSION['sqlReporteTiempoReal'])? $_SESSION['sqlReporteTiempoReal'] : ""; 
 										$result = mysqli_query($conexion, $sql);
 										$arrayLat = array();
 										$arrayLgt = array();
 										$cont = 0;
+										$contadorId=1;
 										while ($mostrar = mysqli_fetch_array($result)) {
-											$idLocalizacion = $mostrar['idLocalizacion'];
+											$idLocalizacion = $contadorId;
 											$latitud = $mostrar['latitud'];
 											$longitud = $mostrar['longitud'];
 											$fechaActualizacion = $mostrar['fechaActualizacion'];
 											$arrayLat[$cont] = $mostrar['latitud'];
 											$arrayLgt[$cont] = $mostrar['longitud'];
 											$cont++;
+											$contadorId++;
 								?>
 											<tbody>
 												<tr>
@@ -219,7 +226,7 @@ $seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGenero
 								// Initialize and add the map
 								function initMap() {
 									var options = {
-										zoom: 10,
+										zoom: 15,
 										center: {
 											lat: <?php echo $latitud; ?>,
 											lng: <?php echo $longitud; ?>
@@ -275,11 +282,13 @@ $seGeneroReporte =  isset($_SESSION['seGeneroTiemporeal']) ? $_SESSION['seGenero
 							<script>
 								<?php if ($seGeneroReporte == "1") { ?>
 
-								<?php  } else { ?>
-									$('#fechaInicioLabel').hide();
-									$('#fechaFinLabel').hide();
+								<?php  } elseif($seGeneroReporte == "2"){ ?>
+									$('#reporte-container').empty();
+									$('#reporte-container').append("no esta activo");
+
+								<?php  } else { ?> 
 									$('#reporte-container').hide();
-								<?php  } ?>
+								<?php }?>
 							</script>
 					</div>
 				</div>
