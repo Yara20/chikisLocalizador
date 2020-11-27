@@ -1,11 +1,13 @@
 <?php 
     include 'conexion.php';
     session_start();
-    $idSeguimientoSeleccionado= $_SESSION['idSeguimientoSeleccionado'] == "" ? $_POST['idSeguimientoSeleccionado']: $_SESSION['idSeguimientoSeleccionado'];
+    $idSeguimientoSeleccionado= $_POST['idSeguimientoSeleccionado'] == "" ? $_SESSION['idSeguimientoSeleccionado']: $_POST['idSeguimientoSeleccionado'];
     
     $idHijoSelect=$_POST['idHijoSelect'];
-    $_SESSION['fechaInicioHidden']= $_SESSION['fechaInicioHidden'] == ""? $_POST['fechaInicioHidden']: $_SESSION['fechaInicioHidden'];
-    $_SESSION['fechaFinHidden']= $_SESSION['fechaFinHidden'] == "" ? $_POST['fechaFinHidden']: $_SESSION['fechaFinHidden'];    
+    $_SESSION['fechaInicioHidden']= $_POST['fechaInicioHidden'] == ""? $_SESSION['fechaInicioHidden']: $_POST['fechaInicioHidden'];
+
+    $_SESSION['fechaFinHidden']= $_POST['fechaFinHidden'] == ""? $_SESSION['fechaFinHidden']: $_POST['fechaFinHidden'];
+    $_SESSION['fechaFinHidden'];    
     $_SESSION['idSeguimientoSeleccionado']=$idSeguimientoSeleccionado; 
 
     $_SESSION['estaGeneradoReporte']="1";
