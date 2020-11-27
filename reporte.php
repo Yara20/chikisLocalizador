@@ -330,7 +330,7 @@ $_SESSION['seGeneroTiemporeal'] = "0";
 								$contConsultas = 0;
 								while ($mostrar = mysqli_fetch_array($result)) {
 									$arrayConsultas[$contConsultas] = "SELECT S.idSeguimiento, S.fechaInicio, S.fechaFin, H.nombreHijo, H.idHijo
-																		FROM seguimiento S inner join Hijo H on S.idHijo=H.idHijo
+																		FROM seguimiento S inner join hijo H on S.idHijo=H.idHijo
 																		where S.fechaFin is not null and H.idHijo=" . $mostrar['idHijo'] . ";";
 									$contConsultas++;
 								}
