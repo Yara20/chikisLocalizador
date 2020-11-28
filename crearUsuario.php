@@ -27,7 +27,6 @@
                      window.history.go(-1);
                 </script>';
     }else{
-        echo    $idRol;
         header("location:usuarios.php");
         echo    '<script>
                      alert("Usuario exitosamente registrado") ;
