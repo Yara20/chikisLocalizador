@@ -125,7 +125,7 @@
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <br>
-        <form action="crearUsuario.php" method="POST">
+        <form action="guardarUsuario.php" method="POST">
           <div class="container">
             <form class="needs-validation" novalidate>
               <div class="form-row">
@@ -185,10 +185,11 @@
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="">Rol</label>
+                  <input type="hidden" class="form-control" name="esActualizar" placeholder="" value="0" required>
                   <select class="custom-select d-block w-100" name="tipoRol" required>
                     <option value="">....</option>
-                    <option>Administrador</option>
-                    <option>Padre</option>
+                    <option value="1">Administrador</option>
+                    <option value="2">Padre</option>
                   </select>
                   <div class="valid-tooltip">
                     Looks good!
@@ -222,6 +223,7 @@
             <?php  
               $sql = "SELECT U.idUsuario,U.nombreCompleto,U.ci,U.correo,U.celular,U.usuario,U.estado,R.tipoRol
                       FROM usuario U inner join rol R on U.idRol=R.idRol
+                      WHERE estado='1'
                       ORDER BY U.idUsuario";
               $result = mysqli_query($conexion,$sql);
               while($mostrar = mysqli_fetch_array($result)){
@@ -236,11 +238,11 @@
                 <td><?php echo $mostrar['usuario'] ?></td>
                 <td><?php echo $mostrar['estado'] ?></td>
                 <td><?php echo $mostrar['tipoRol']?></td>
-                <td><button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalEditarUsuario">Editar</button></td>
+                <td><a href="editarUsuario.php?id=<?php echo $mostrar["idUsuario"]?>" type="submit" class="btn btn-success">Editar</a></td>
                     <?php
                         if($mostrar["idUsuario"] != 1){
                     ?>
-                <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalEliminarUsuario">Eliminar</button></td>
+                <td><a href="eliminarUsuario.php?id=<?php echo $mostrar["idUsuario"]?>" type="submit" class="btn btn-danger">Eliminar</a></td>
                     <?php
                         }
                     ?>
@@ -253,85 +255,6 @@
       </main>
     </div>
   </div>
-
-  <!--MODAL-->
-  <div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form action="" method="POST">
-              <input type="hidden" name = "idUsuario" value =<?php echo $mostrar['idUsuario'] ?>>
-              <div class="form-group">
-                <label for="" class="col-form-label">Nombre Completo</label>
-                <input type="text" class="form-control" id="" value =<?php echo $mostrar['nombreCompleto'] ?>>
-              </div>
-              <div class="form-row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="" class="col-form-label">Carnet Identidad</label>
-                    <input type="text" class="form-control" id="" value =<?php echo $mostrar['ci'] ?>>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="" class="col-form-label">Correo</label>
-                    <input type="email" class="form-control" id="" value =<?php echo $mostrar['correo'] ?>>
-                  </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="" class="col-form-label">Codigo Pais</label>
-                    <input type="number" class="form-control" id="" value =<?php echo $mostrar['codigoPais'] ?>>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="" class="col-form-label">Numero Celular</label>
-                    <input type="number" class="form-control" id="" value =<?php echo $mostrar['celular'] ?>>
-                  </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="" class="col-form-label">Usuario</label>
-                    <input type="text" class="form-control" id="" value =<?php echo $mostrar['usuario'] ?>>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="" class="col-form-label">Clave</label>
-                    <input type="password" class="form-control" id="">
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                  <label for="" class="col-form-label">Rol</label>
-                  <select class="custom-select d-block w-100" name="tipoRol" id="" value =<?php echo $mostrar['rol'] ?>>
-                    <option value="">....</option>
-                    <option>Administrador</option>
-                    <option>Padre</option>
-                  </select>
-               </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary">Guardar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--FIN MODAL-->
-
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script>

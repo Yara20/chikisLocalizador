@@ -119,7 +119,7 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
           <br>
-          <form action="crearDispositivo.php" onsubmit="validacionDispo()" method="POST">
+          <form action="guardarDispositivo.php" onsubmit="validacionDispo()" method="POST">
             <div class="container">
               <form class="needs-validation" novalidate>
                 <div class="form-row">
@@ -168,7 +168,7 @@
               </tr>
             </thead>
             <?php  
-              $sql = "SELECT * FROM dispositivo";
+              $sql = "SELECT * FROM dispositivo WHERE estado='1'";
               $result = mysqli_query($conexion,$sql);
               while($mostrar = mysqli_fetch_array($result)){
             ?>
@@ -181,8 +181,8 @@
                 <td><?php echo $mostrar['precio'] ?></td>
                 <td><?php echo $mostrar['estado'] ?></td>
                 <td><?php echo $mostrar['fechaActualizacion'] ?></td>
-                <td><button type="button" class="btn btn-success editbtnU" data-toggle="modal" data-target="#editarUsuario">Editar</button></td>
-                <td><button type="button" class="btn btn-danger deletebtnU" data-toggle="modal" data-target="#eliminarUsuario">Eliminar</button></td>
+                <td><a href="editarDispositivo.php?id=<?php echo $mostrar["idDispositivo"]?>" type="submit" class="btn btn-success">Editar</a></td>
+                <td><a href="eliminarDispositivo.php?id=<?php echo $mostrar["idDispositivo"]?>" type="submit" class="btn btn-danger">Eliminar</a></td>
               </tr>
             </tbody>
             <?php 

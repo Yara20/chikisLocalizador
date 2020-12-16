@@ -153,7 +153,7 @@ $_SESSION['seGeneroTiemporeal'] = "0";
 								<?php
 								$sql = "SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
 												from hijo H inner join usuario U on H.idUsuario=U.idUsuario
-												where U.usuario='$usuario'";
+												where U.usuario='$usuario'and H.estado='1'";
 								$result = mysqli_query($conexion, $sql);
 								while ($mostrar = mysqli_fetch_array($result)) {
 								?>

@@ -49,7 +49,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" >
         <div class="panel-body">
         <h1>Crear Cuenta</h1>
-        <form action="crearUsuario2.php" method="POST">
+        <form action="guardarUsuario2.php" method="POST">
             <div class="container">
                 <form class="needs-validation" novalidate>
                     <div class="form-row">

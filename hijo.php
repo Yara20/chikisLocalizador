@@ -138,6 +138,7 @@ $_SESSION['idSeguimientoSeleccionado']= "";
           <div class="container">
             <form class="needs-validation" novalidate>
               <div class="form-row">
+              <input type="hidden" name = "idHijo" value="">
                 <div class="col-md-4 mb-3">
                   <label for="">Nombre Hijo</label>
                   <input type="text" class="form-control" name="nombreHijo" placeholder="" value="" required>
@@ -207,10 +208,9 @@ $_SESSION['idSeguimientoSeleccionado']= "";
           </thead>
           <?php
           $cont = 1;
-          //$sql = "SELECT * FROM hijo";
           $sql = "SELECT H.idHijo, nombreHijo,H.codigoPais,H.celular,operadorMovil,imei
                     from hijo H inner join usuario U on H.idUsuario=U.idUsuario
-                    where U.usuario='$usuario'";
+                    where U.usuario='$usuario' and H.estado='1'";
           $result = mysqli_query($conexion, $sql);
           while ($mostrar = mysqli_fetch_array($result)) {
             $idHijo=$mostrar['idHijo'];
@@ -235,8 +235,8 @@ $_SESSION['idSeguimientoSeleccionado']= "";
                 <td><?php echo "+". $mostrar['codigoPais']. " " .$mostrar['celular'] ?></td>
                 <td><?php echo $mostrar['operadorMovil'] ?></td>
                 <td><?php echo $mostrar['imei'] ?></td>
-                <td><button type="button" class="btn btn-success editbtnU" data-toggle="modal" data-target="#editarUsuario">Editar</button></td>
-                <td><button type="button" class="btn btn-danger deletebtnU" data-toggle="modal" data-target="#eliminarUsuario">Eliminar</button></td>
+                <td><a href="editarHijo.php?id=<?php echo $mostrar["idHijo"]?>" type="submit" class="btn btn-success">Editar</a></td>
+                <td><a href="eliminarHijo.php?id=<?php echo $mostrar["idHijo"]?>" type="submit" class="btn btn-danger">Eliminar</a></td>
               </tr>
             </tbody>
           <?php
@@ -249,8 +249,8 @@ $_SESSION['idSeguimientoSeleccionado']= "";
   </div>
 
 
-  <!-- Modal -->
-  <div class="modal fade exampleModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade exampleModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -273,7 +273,7 @@ $_SESSION['idSeguimientoSeleccionado']= "";
       </div>
     </div>
   </div>
-
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script>
     $(document).ready(function() {

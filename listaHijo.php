@@ -130,15 +130,14 @@
                 <th scope="col">Celular</th>
                 <th scope="col">Operador Movil</th>  
                 <th scope="col">Imei</th>      
-                <th scope="col">Usuario</th>              
-                <th scope="col">Editar</th>
-                <th scope="col">Eliminar</th>
+                <th scope="col">Usuario</th> 
               </tr>
             </thead>
             <?php  
               //$sql = "SELECT * FROM hijo";
               $sql="SELECT idHijo,nombreHijo,H.codigoPais,H.celular,operadorMovil,imei,U.usuario
-                    from hijo H inner join usuario U on H.idUsuario=U.idUsuario";
+                    from hijo H inner join usuario U on H.idUsuario=U.idUsuario
+                    where H.estado='1'";
               $result = mysqli_query($conexion,$sql);
               while($mostrar = mysqli_fetch_array($result)){
             ?>
@@ -151,8 +150,6 @@
                 <td><?php echo $mostrar['operadorMovil'] ?></td>
                 <td><?php echo $mostrar['imei'] ?></td>
                 <td><?php echo $mostrar['usuario'] ?></td>
-                <td><button type="button" class="btn btn-success editbtnU" data-toggle="modal" data-target="#editarUsuario">Editar</button></td>
-                <td><button type="button" class="btn btn-danger deletebtnU" data-toggle="modal" data-target="#eliminarUsuario">Eliminar</button></td>
               </tr>
             </tbody>
             <?php 

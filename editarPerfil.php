@@ -1,4 +1,5 @@
 <?php
+include 'conexion.php';
 session_start();
 $usuario = $_SESSION['username'];
 $rol = $_SESSION['idRol'];
@@ -7,6 +8,28 @@ $_SESSION['seGeneroTiemporeal'] = "0";
 $_SESSION['fechaInicioHidden']= "";
 $_SESSION['fechaFinHidden']= "";
 $_SESSION['idSeguimientoSeleccionado']= "";
+$idUsuario=$_SESSION['idUsuario'];
+
+$mostrar = "SELECT nombreCompleto,ci,correo,codigoPais,celular,usuario,clave
+                FROM usuario
+                WHERE idUsuario='$idUsuario'";
+$resultado = mysqli_query($conexion, $mostrar);
+$result_sql = mysqli_num_rows($resultado);
+if ($result_sql == 0) {
+    header('Location: inicio.php');
+} else {
+    $option = '';
+    while ($data = mysqli_fetch_array($resultado)) {
+        $nombreCompleto = $data['nombreCompleto'];
+        $ci = $data['ci'];
+        $correo = $data['correo'];
+        $codigoPais = $data['codigoPais'];
+        $celular = $data['celular'];
+        $usuario = $data['usuario'];
+        $clave = md5($data['clave']);
+    }
+}
+mysqli_close($conexion);
 ?>
 <!doctype html>
 <html lang="en">
@@ -123,20 +146,22 @@ $_SESSION['idSeguimientoSeleccionado']= "";
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <div class="panel-body">
                     <h1>Crear Cuenta</h1>
-                    <form action="editarUsuario.php" method="POST">
+                    <form action="guardarUsuario.php" method="POST">
                         <div class="container">
                             <form class="needs-validation" novalidate>
                                 <div class="form-row">
+                                <input type="hidden" name="esActualizar" value="2">
+                                <input type="hidden" name="idUsuario" value="<?php echo $idUsuario; ?>">
                                     <div class="col-md-6 mb-3">
                                         <label for="">Nombre Completo</label>
-                                        <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="" required>
+                                        <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="<?php echo $nombreCompleto; ?>" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="">Carnet Identidad</label>
-                                        <input type="text" class="form-control" name="ci" placeholder="" value="" required>
+                                        <input type="text" class="form-control" name="ci" placeholder="" value="<?php echo $ci; ?>" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>
@@ -145,14 +170,14 @@ $_SESSION['idSeguimientoSeleccionado']= "";
                                 <div class="form-row">
                                     <div class="col-md-6 mb-3">
                                         <label for="">Correo</label>
-                                        <input type="text" class="form-control" name="correo" placeholder="" value="" required>
+                                        <input type="text" class="form-control" name="correo" placeholder="" value="<?php echo $correo; ?>" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="">Codigo Pais</label>
-                                        <input type="number" class="form-control" name="codigoPais" placeholder="Ejm: 591" value="" required>
+                                        <input type="number" class="form-control" name="codigoPais" placeholder="Ejm: 591" value="<?php echo $codigoPais; ?>" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>
@@ -161,14 +186,14 @@ $_SESSION['idSeguimientoSeleccionado']= "";
                                 <div class="form-row">
                                     <div class="col-md-6 mb-3">
                                         <label for="">Numero de Celular</label>
-                                        <input type="number" class="form-control" name="celular" placeholder="" value="" required>
+                                        <input type="number" class="form-control" name="celular" placeholder="" value="<?php echo $celular; ?>" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="">Usuario</label>
-                                        <input type="text" class="form-control" name="usuario" placeholder="" value="" required>
+                                        <input type="text" class="form-control" name="usuario" placeholder="" value="<?php echo $usuario; ?>" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>
