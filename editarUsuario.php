@@ -70,19 +70,21 @@ mysqli_close($conexion);
             <br>
             <h2 align="center">Editar informacion</h2>
             <br>
-            <form method="POST" action="guardarUsuario.php" class="needs-validation" novalidate>
+            <form method="POST" action="guardarUsuario.php" class="needs-validation" >
                 <div class="form-row">
                     <input type="hidden" name="idUsuario" value="">
                     <div class="col-md-4 mb-3">
                         <label for="">Nombre Completo</label>
-                        <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="<?php echo $nombreCompleto; ?>" required>
+                        <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="<?php echo $nombreCompleto; ?>" 
+                        pattern="[A-Za-z\s]+"  title="Solo se permite letras" required>
                         <div class="valid-tooltip">
                             Looks good!
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="">Carnet Identidad</label>
-                        <input type="text" class="form-control" name="ci" placeholder="" value="<?php echo $ci; ?>" required>
+                        <input type="text" class="form-control" name="ci" placeholder="" value="<?php echo $ci; ?>" 
+                        pattern="[0-9]+" title="Solo se permite numeros" required>
                         <div class="valid-tooltip">
                             Looks good!
                         </div>
@@ -105,14 +107,16 @@ mysqli_close($conexion);
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="">Numero de Celular</label>
-                        <input type="number" class="form-control" name="celular" placeholder="" value="<?php echo $celular; ?>" required>
+                        <input type="number" class="form-control" name="celular" placeholder="" value="<?php echo $celular; ?>" 
+                        pattern="[0-9]+" required>
                         <div class="valid-tooltip">
                             Looks good!
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label for="">Usuario</label>
-                        <input type="text" class="form-control" name="usuario" placeholder="" value="<?php echo $usuario; ?>" required>
+                        <input type="text" class="form-control" name="usuario" placeholder="" value="<?php echo $usuario; ?>" 
+                        pattern="[A-Za-z0-9]+" title="Solo se permite numeros y letras" required>
                         <div class="valid-tooltip">
                             Looks good!
                         </div>
@@ -121,7 +125,8 @@ mysqli_close($conexion);
                 <div class="form-row">
                     <div class="col-md-4 mb-3">
                         <label for="">Rol</label>
-                        <input type="hidden" class="form-control" name="esActualizar" placeholder="" value="1" required>
+                        <input type="hidden" class="form-control" name="esActualizar" placeholder="" value="1">
+                        <input type="hidden" class="form-control" name="usuarioOriginal" placeholder="" value="<?php echo $usuario; ?>">
                         <input type="hidden" class="form-control" name="idUsuario" placeholder="" value="<?php echo $iduser; ?>" required>
                         <?php
                             

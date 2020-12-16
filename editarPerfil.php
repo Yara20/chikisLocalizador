@@ -148,10 +148,11 @@ mysqli_close($conexion);
                     <h1>Crear Cuenta</h1>
                     <form action="guardarUsuario.php" method="POST">
                         <div class="container">
-                            <form class="needs-validation" novalidate>
+                            <form class="needs-validation">
                                 <div class="form-row">
                                 <input type="hidden" name="esActualizar" value="2">
                                 <input type="hidden" name="idUsuario" value="<?php echo $idUsuario; ?>">
+                                <input type="hidden" class="form-control" name="usuarioOriginal" placeholder="" value="<?php echo $usuario; ?>">
                                     <div class="col-md-6 mb-3">
                                         <label for="">Nombre Completo</label>
                                         <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="<?php echo $nombreCompleto; ?>" required>
@@ -209,7 +210,7 @@ mysqli_close($conexion);
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="">Repetir Clave</label>
-                                        <input type="password" class="form-control" name="clave" placeholder="" value="" required>
+                                        <input type="password" class="form-control" name="clave2" placeholder="" value="" required>
                                         <div class="valid-tooltip">
                                             Looks good!
                                         </div>

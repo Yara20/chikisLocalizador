@@ -49,20 +49,23 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" >
         <div class="panel-body">
         <h1>Crear Cuenta</h1>
-        <form action="guardarUsuario2.php" method="POST">
+        <form action="guardarUsuario.php" method="POST">
             <div class="container">
                 <form class="needs-validation" novalidate>
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Nombre Completo</label>
-                            <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="" required>
+                            <input type="hidden" class="form-control" name="esActualizar" placeholder="" value="3">
+                            <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="" 
+                            pattern="[A-Za-z\s]+"  title="Solo se permite letras" required>
                             <div class="valid-tooltip">
                                 Looks good!
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Carnet Identidad</label>
-                            <input type="text" class="form-control" name="ci" placeholder="" value="" required>
+                            <input type="text" class="form-control" name="ci" placeholder="" value="" 
+                            pattern="[0-9]+" title="Solo se permite numeros" required>
                             <div class="valid-tooltip">
                                 Looks good!
                             </div>
@@ -71,7 +74,7 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Correo</label>
-                            <input type="text" class="form-control" name="correo" placeholder="" value="" required>
+                            <input type="email" class="form-control" name="correo" placeholder="" value="" required>
                             <div class="valid-tooltip">
                                 Looks good!
                             </div>
@@ -87,14 +90,16 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="">Numero de Celular</label>
-                            <input type="number" class="form-control" name="celular" placeholder="" value="" required>
+                            <input type="number" class="form-control" name="celular" placeholder="" value="" 
+                            pattern="[0-9]+" required>
                             <div class="valid-tooltip">
                                 Looks good!
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Usuario</label>
-                            <input type="text" class="form-control" name="usuario" placeholder="" value="" required>
+                            <input type="text" class="form-control" name="usuario" placeholder="" value="" 
+                            pattern="[A-Za-z0-9]+" title="Solo se permite numeros y letras" required>
                             <div class="valid-tooltip">
                                 Looks good!
                             </div>
@@ -110,13 +115,14 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="">Repetir Clave</label>
-                            <input type="password" class="form-control" name="clave" placeholder="" value="" required>
+                            <input type="password" class="form-control" name="clave2" placeholder="" value="" required>
                             <div class="valid-tooltip">
                                 Looks good!
                             </div>
                         </div>
                     </div>
                     <button class="btn btn-primary" type="submit">Guardar</button>
+                    <input type="button" value="Comprobar si son iguales" onClick="comprobarClave()">
                 </form>
             </div>
             <br>
@@ -129,7 +135,17 @@
     </div>
 
 
-    
+    <script>
+        function comprobarClave(){
+            clave = document.f1.clave.value
+            clave2 = document.f1.clave2.value
+
+            if (clave1 == clave2)
+            alert("Las dos claves son iguales...\nRealizaríamos las acciones del caso positivo")
+            else
+            alert("Las dos claves son distintas...\nRealizaríamos las acciones del caso negativo")
+        }
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous">

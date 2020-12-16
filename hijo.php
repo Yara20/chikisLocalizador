@@ -134,14 +134,14 @@ $_SESSION['idSeguimientoSeleccionado']= "";
 
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
         <br>
-        <form action="crearHijo.php" method="POST">
+        <form action="guardarHijo.php" method="POST">
           <div class="container">
             <form class="needs-validation" novalidate>
               <div class="form-row">
               <input type="hidden" name = "idHijo" value="">
                 <div class="col-md-4 mb-3">
                   <label for="">Nombre Hijo</label>
-                  <input type="text" class="form-control" name="nombreHijo" placeholder="" value="" required>
+                  <input type="text" class="form-control" name="nombreHijo" placeholder="" value="" pattern="[A-Za-z\s]+"  title="Solo se permite letras" required>
                   <div class="valid-tooltip">
                     Looks good!
                   </div>
@@ -177,7 +177,7 @@ $_SESSION['idSeguimientoSeleccionado']= "";
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="">Imei Dispositivo</label>
-                  <input type="text" class="form-control" name="imei" placeholder="" value="" required>
+                  <input type="text" class="form-control" name="imei" placeholder="" value="" pattern="[0-9]{14,15}" title="Solo se permite imei 14 a 15" required>
                   <div class="valid-tooltip">
                     Looks good!
                   </div>

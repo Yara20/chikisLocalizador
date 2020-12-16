@@ -125,14 +125,14 @@
                 <div class="form-row">
                   <div class="col-md-4 mb-3" id="imeiMensaje">
                     <label for="">Imei</label>
-                    <input type="text" class="form-control" name="imei" placeholder="" value=""  id="imei" required>
+                    <input type="text" class="form-control" name="imei" placeholder="" value=""  id="imei" pattern="[0-9]{14,15}" title="Solo se permite imei 14 a 15" required>
                     <div class="valid-tooltip">
                       Looks good!
                     </div>
                   </div>
                   <div class="col-md-4 mb-3" id="modeloMensaje">
                     <label for="">Modelo</label>
-                    <input type="text" class="form-control" name="modelo" placeholder="" value="" id="modelo" required>
+                    <input type="text" class="form-control" name="modelo" placeholder="" value="" id="modelo" pattern="[A-Za-z0-9]+" title="Solo se permite numeros y letras" required>
                     <div class="valid-tooltip">
                       Looks good!
                     </div>

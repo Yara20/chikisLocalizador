@@ -132,14 +132,14 @@
                 <input type="hidden" name = "idUsuario" value="">
                 <div class="col-md-4 mb-3">
                   <label for="">Nombre Completo</label>
-                  <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="" required>
+                  <input type="text" class="form-control" name="nombreCompleto" placeholder="" value="" pattern="[A-Za-z\s]+"  title="Solo se permite letras" required>
                   <div class="valid-tooltip">
                     Looks good!
                   </div>
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="">Carnet Identidad</label>
-                  <input type="text" class="form-control" name="ci" placeholder="" value="" required>
+                  <input type="text" class="form-control" name="ci" placeholder="" value="" pattern="[0-9]+" title="Solo se permite numeros" required>
                   <div class="valid-tooltip">
                     Looks good!
                   </div>
@@ -162,14 +162,14 @@
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="">Numero de Celular</label>
-                  <input type="number" class="form-control" name="celular" placeholder="" value="" required>
+                  <input type="number" class="form-control" name="celular" placeholder="" value="" pattern="[0-9]+" required>
                   <div class="valid-tooltip">
                     Looks good!
                   </div>
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="">Usuario</label>
-                  <input type="text" class="form-control" name="usuario" placeholder="" value="" required>
+                  <input type="text" class="form-control" name="usuario" placeholder="" value="" pattern="[A-Za-z0-9]+" title="Solo se permite numeros y letras" required>
                   <div class="valid-tooltip">
                     Looks good!
                   </div>

@@ -47,16 +47,17 @@ mysqli_close($conexion);
         <div class="">
             <br>
             <h2 align="center">Editar informacion</h2>
-            <form action="crearHijo.php" method="POST">
+            <form action="guardarHijo.php" method="POST">
             <div class="container">
-              <form class="needs-validation" novalidate>
+              <form class="needs-validation">
                 <div class="form-row">
                 
                 <input type="hidden" class="form-control" name="esActualizar" placeholder="" value="1" required>
                 <input type="hidden" class="form-control" name="idHijo" placeholder="" value="<?php echo $idHijo; ?>" required>
                   <div class="col-md-4 mb-3">
                     <label for="">Nombre Hijo</label>
-                    <input type="text" class="form-control" name="nombreHijo" placeholder="" value="<?php echo $nombreHijo; ?>" required>
+                    <input type="text" class="form-control" name="nombreHijo" placeholder="" value="<?php echo $nombreHijo; ?>" 
+                    pattern="[A-Za-z\s]+"  title="Solo se permite letras" required>
                     <div class="valid-tooltip">
                       Looks good!
                     </div>
@@ -92,7 +93,8 @@ mysqli_close($conexion);
                   </div>
                   <div class="col-md-4 mb-3">
                     <label for="">Imei Dispositivo</label>
-                    <input type="text" class="form-control" name="imei" placeholder="" value="<?php echo $imei; ?>" required>
+                    <input type="text" class="form-control" name="imei" placeholder="" value="<?php echo $imei; ?>" 
+                    pattern="[0-9]{14,15}" title="Solo se permite imei 14 a 15" required>
                     <div class="valid-tooltip">
                       Looks good!
                     </div>
